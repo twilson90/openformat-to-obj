@@ -18,4 +18,4 @@ To overide this behaviour, add the optional argument '-f' or  '--force', and it 
 
 Example
 --------------
-  python3 openformat-to-obj.py **/*.odr -f
+    python3 openformat-to-obj.py **/*.odr -f
