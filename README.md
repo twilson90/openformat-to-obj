@@ -24,3 +24,5 @@ Example
 Or
     
     python3 openformat-to-obj.py "C:\GTA5Models\prop_shamal_crash.odr"
+
+!(http://i.imgur.com/DjOCy7O.png)
