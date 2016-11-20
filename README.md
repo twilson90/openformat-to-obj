@@ -11,6 +11,7 @@ Requirements
 Usage
 --------------
 The script requires 1 argument - a glob or filepath to one or many odr files
+For each odr it outputs an obj and a mtl file for easy viewing.
 
 By default it checks for a pre-existing obj file, if it finds one that it created previously, it will not run the conversion on that particular odr file.
 
@@ -19,3 +20,4 @@ To overide this behaviour, add the optional argument '-f' or  '--force', and it 
 Example
 --------------
     python3 openformat-to-obj.py **/*.odr -f
+    python3 openformat-to-obj.py "C:\GTA5Models\prop_shamal_crash.odr"
