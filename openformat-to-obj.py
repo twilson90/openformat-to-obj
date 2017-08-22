@@ -5,7 +5,7 @@ from enum import Enum
 VALID_IMAGE_EXTS = [".png", ".tga", ".dds", ".jpg", ".jpeg"]
 VALID_PATH_REGEX = re.compile(r"^[\\\w\-. ]+$")
 owd = os.getcwd()
-VERSION = "0.12"
+VERSION = "0.13"
 OBJ_FIRST_LINE = "# V %s" % VERSION
 
 class D3DDECLUSAGE(Enum):
@@ -50,16 +50,27 @@ class D3DDECLTYPE(Enum):
 	D3DDECLTYPE_UNUSED     = 17,
 
 class Logger(object):
-    def __init__(self):
-        self.terminal = sys.stdout
-        self.log = open("openformat_convert.log", "a")
+	def __init__(self):
+		self.terminal = sys.stdout
+		self.log = open(make_path_unique("openformat-to-obj.log"), "a")
 
-    def write(self, message):
-        self.terminal.write(message)
-        self.log.write(message)  
+	def write(self, message):
+		self.terminal.write(message)
+		self.log.write(message)  
 
-    def flush(self):
-        pass  
+	def flush(self):
+		pass
+
+def make_path_unique(path):
+	dir = os.path.dirname(path)
+	file_name_with_ext = os.path.basename(path)
+	file_name, ext = os.path.splitext(file_name_with_ext)
+	i = 1
+	while(True):
+		if not os.path.exists(path):
+			return path
+		path = os.path.join(dir, file_name + " " + str(i) + ext)
+		i += 1
 
 def parse_odr(path, force=False):
 
@@ -91,7 +102,7 @@ def parse_odr(path, force=False):
 
 	odr_data = readfile(full_path)
 	shader_datas = re.findall(r"Shaders\s+{([\s\S]+?)^\t}", odr_data, re.MULTILINE)
-	shader_datas = re.findall(r"(.+)\s+{([\s\S]+?)}", shader_datas[0], re.MULTILINE)
+	shader_datas = re.findall(r"(.+?\.sps)[\s\S]+?{([\s\S]+?)}", shader_datas[0], re.MULTILINE)
 	shaders = []
 
 	for d in shader_datas:
@@ -112,7 +123,7 @@ def parse_odr(path, force=False):
 				continue
 
 			if not VALID_PATH_REGEX.match(otx_path):
-				print("'%s' is not a valid path" % otx_path)
+				print("Sampler '%s' is not a valid path" % otx_path)
 				continue
 
 			if not os.path.isfile(otx_path):
@@ -214,7 +225,6 @@ def parse_odr(path, force=False):
 					vertices[i] = parts
 
 				shader = shaders[shader_index]
-
 				item_xml = shader["xml"].find("./VertexDeclarations/Item[@skinned='%s']" % skinned)
 				elements_xml = item_xml.findall("./Element")
 
